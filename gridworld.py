@@ -95,7 +95,23 @@ def value_iteration(env, gamma, max_iterations, logger):
    
 ### Please finish the code below ##############################################
 ###############################################################################
+    for i in range(max_iterations):
+        v_prev = v.copy() # copies the current value
+        for s in range(NUM_STATES):
+            q_values = []
+            for a in range(NUM_ACTIONS):
+                q = sum(p * (r + gamma * v_prev[s_]) for p, s_, r, terminal in TRANSITION_MODEL[s][a])
+                q_values.append(q)
+            v[s] = max(q_values) # gets the max
+            pi[s] = q_values.index(max(q_values)) # sets as the max
+            
+        logger.log(i, v, pi) # updates the visualization
 
+        delta = 0
+        for s in range(NUM_STATES):
+            delta = max(delta, abs(v[s] - v_prev[s]))
+        if delta < 1e-4:
+            break
 ###############################################################################
     return pi
 
