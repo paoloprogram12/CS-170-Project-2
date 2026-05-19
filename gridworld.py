@@ -216,6 +216,35 @@ def q_learning(env, gamma, max_iterations, logger):
 
 ### Please finish the code below ##############################################
 ###############################################################################
+    Q = [[0] * NUM_ACTIONS for s in range(NUM_STATES)] # each action in each state is 0
+
+    for i in range(max_iterations): # each episode
+        s = env.reset() # goes back to starting state
+
+        terminal = False
+        while not terminal:
+            # sample step
+            if random.random() < eps:
+                a = random.randint(0, NUM_ACTIONS - 1) # random action
+            else:
+                a = Q[s].index(max(Q[s]))
+
+            s_, r, terminal, info = env.step(a)
+
+            if terminal:
+                target = r
+            else:
+                target = r + gamma * max(Q[s_])
+
+            Q[s][a] = (1 - alpha) * Q[s][a] + alpha * target
+
+            s = s_
+
+        for s in range(NUM_STATES):
+            pi[s] = Q[s].index(max(Q[s]))
+            v[s] = max(Q[s])
+
+        logger.log(i, v, pi)
 
 ###############################################################################
     return pi
