@@ -111,6 +111,7 @@ def q_learning(env, logger):
             v[s] = max(Q[s])
 
         logger.log(i, v, pi)
+        eps = max(0.1, eps * 0.99)
 ###############################################################################
     return pi
 
