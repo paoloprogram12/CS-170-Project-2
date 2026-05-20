@@ -163,6 +163,30 @@ def policy_iteration(env, gamma, max_iterations, logger):
 
 ### Please finish the code below ##############################################
 ###############################################################################
+    while True:
+        policy_stable = True
+        # policy evaluation
+        for k in range(max_iterations):
+            v_prev = v.copy()
+            delta = 0
+            for s in range(NUM_STATES):
+                v[s] = sum(p * (r + gamma * v_prev[s_])for p, s_, r, terminal in TRANSITION_MODEL[s][pi[s]])
+                delta = max(delta, abs(v[s] - v_prev[s]))
+            if delta < 1e-4:
+                break
+
+        # policy improvement
+        for s in range(NUM_STATES):
+            old_action = pi[s]
+            q_values = [sum(p * (r + gamma * v[s_]) for p, s_, r, terminal in TRANSITION_MODEL[s][a]) for a in range(NUM_ACTIONS)]
+            pi[s] = q_values.index(max(q_values))
+            if old_action != pi[s]:
+                policy_stable = False
+
+        logger.log(k, v, pi)
+
+        if policy_stable:
+            break
 
 ###############################################################################
     return pi
