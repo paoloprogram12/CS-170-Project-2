@@ -231,7 +231,7 @@ def q_learning(env, gamma, max_iterations, logger):
     # Adjust superparameters as you see fit
     #
     # parameter for the epsilon-greedy method to trade off exploration and exploitation
-    eps = 0.1
+    eps = 1
     # learning rate for updating q values based on sample estimates
     alpha = 0.1
     #########################
@@ -269,6 +269,8 @@ def q_learning(env, gamma, max_iterations, logger):
             v[s] = max(Q[s])
 
         logger.log(i, v, pi)
+
+        eps = max(0.1, eps * 0.99)
 
 ###############################################################################
     return pi
